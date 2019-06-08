@@ -30,9 +30,20 @@ void shminit() {
 
 int shm_open(int id, char **pointer) {
 
-//you write this
-
-
+	uint va, pa;
+	pte_t pgdir;
+	int pem;//permission (read/write)	
+	acquire(&(shm_table.lock));
+	for (i = 0; i< 64; i++) {
+		if(shm_table.shm_pages[i].id == id)
+		{
+			pa = shm_table.shm_pages[i].frame;
+			pem = PTE_W|PTE_U;
+			va = ;
+			pgdir = myproc().pgdir;
+		}
+	}
+  release(&(shm_table.lock));
 
 
 return 0; //added to remove compiler warning -- you should decide what to return
@@ -41,7 +52,16 @@ return 0; //added to remove compiler warning -- you should decide what to return
 
 int shm_close(int id) {
 //you write this too!
-
+  acquire(&(shm_table.lock));
+  for (int i = 0; i< 64; i++) {
+    if(shm_table.shm_pages[i].id == id)
+    {
+		shm_table.shm_pages[i].id = 0;
+		shm_table.shm_pages[i].frame =0;
+		shm_table.shm_pages[i].refcnt =0;
+	}
+  }
+  release(&(shm_table.lock));
 
 
 
